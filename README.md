@@ -16,7 +16,7 @@ conda install faiss-cpu -c pytorch
 ```
 
 ## Data
-Translations of RuleTaker and LeapOfThought (LoT) datasets can be found in the `data` folder. For the LoT dataset, the files start with  **"randomized"** are the modified version of the data we used for our experiments (randomly negate 50% of statements). For more information on this dataset, please check Appendix A.2 of the paper.
+Translations of RuleTaker and LeapOfThought (LoT) datasets can be downloded from [here](https://drive.google.com/file/d/1CPZjztcOsC4NmF_xAaLASYjjuqeSPcsH/view?usp=share_link). For the LoT dataset, the files start with  **"randomized"** are the modified version of the data we used for our experiments (randomly negate 50% of statements). For more information on this dataset, please check Appendix A.2 of the paper.
 
 ## Usage
 In all the following experiments, you can either pass the arguments directly to the python script or specify the arguments in a `JSON` file and pass the file path to the script.
