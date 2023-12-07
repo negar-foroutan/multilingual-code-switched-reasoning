@@ -32,7 +32,6 @@ python standard_finetuning.py \
 	--do_eval \
 	--per_device_train_batch_size 32 \
 	--per_device_eval_batch_size 32 \
-	--evaluate_during_training \
     --dataset_name ruletaker \
     --rule_taker_depth_level 0 \
 	--num_train_epochs 4 \
@@ -41,7 +40,7 @@ python standard_finetuning.py \
     --evaluation_strategy steps\
     --logging_steps 1000 \
     --train_language en \
-    --second_train_language fr \ # In case of fine-tuning on two datasets
+    --train_second_language fr \ # In case of fine-tuning on two datasets
 	--overwrite_output_dir \
 	--seed 57
 ```

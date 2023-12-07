@@ -152,9 +152,11 @@ class DataTrainingArguments:
         default="ruletaker", metadata={"help": "The dataset name."}
     )
     randomized_dataset: bool = field(
-        default=True, metadata={"help": "Whether to use randomized dataset fro LOT."}
+        default=True, metadata={"help": "Whether to use randomized dataset for LOT."}
     )
-    data_base_dir: Optional[str] = field(metadata={"help": "The base directory of the data."}
+    data_base_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": "The base directory of the data."}
     )
     train_data_path: Optional[str] = field(
         default=None, metadata={"help": "The path to the training data."},
@@ -279,7 +281,7 @@ def mix_two_datasets(tokenizer, padding, train_languages, data_args, model_args,
             else:
                 d_path = os.path.join(data_args.data_base_dir, model_args.train_language, "hypernyms_training_mix_short_train.jsonl")
         t_datasets[lang] = DATASET_CLASSES[data_args.dataset_name](
-        tokenizer, d_path, model_args.model_type, padding, model_args.train_language, data_args.overwrite_cache)
+        tokenizer, d_path, model_args.model_type, padding, data_args.overwrite_cache)
         
     data_size = len(t_datasets[list(t_datasets.keys())[0]])
     random_bool = [random.randint(0, 1) for _ in range(data_size)]
@@ -308,7 +310,7 @@ def mix_two_datasets(tokenizer, padding, train_languages, data_args, model_args,
             else:
                 d_path = os.path.join(data_args.data_base_dir, model_args.language,  "hypernyms_training_mix_short_dev.jsonl")
         e_datasets[lang] = DATASET_CLASSES[data_args.dataset_name](
-        tokenizer, d_path, model_args.model_type, padding, model_args.train_language, data_args.overwrite_cache)
+        tokenizer, d_path, model_args.model_type, padding, data_args.overwrite_cache)
         
     data_size = len(e_datasets[list(e_datasets.keys())[0]])
     random_bool = [random.randint(0, 1) for _ in range(data_size)]
@@ -323,7 +325,7 @@ def mix_two_datasets(tokenizer, padding, train_languages, data_args, model_args,
         all_e_datasets.append(dataset)
     
     eval_dataset = all_e_datasets[0]
-    eval_dataset.encodings = {key: torch.cat([eval_dataset.encodings[key],  all_e_datasets[1].encodings[key]], dim=0) for key in eval_dataset.encodings}
+    eval_dataset.encodings = {key: torch.cat([eval_dataset.encodings[key], all_e_datasets[1].encodings[key]], dim=0) for key in eval_dataset.encodings}
     eval_dataset.labels = eval_dataset.labels + all_e_datasets[1].labels
     
     return train_dataset, eval_dataset
@@ -336,9 +338,9 @@ def main():
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TrainingArguments))
 
     if sys.argv[1].endswith(".json"):
-        model_args, data_args, training_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))[0]
+        model_args, data_args, training_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
-        model_args, data_args, training_args = parser.parse_args_into_dataclasses()[0]
+        model_args, data_args, training_args = parser.parse_args_into_dataclasses()
     
     if data_args.logging_tool == "wandb":
         wandb.init(project=f"{data_args.dataset}-{model_args.model_type} finetuning.")
